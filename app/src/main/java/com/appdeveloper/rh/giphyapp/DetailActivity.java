@@ -1,6 +1,7 @@
 package com.appdeveloper.rh.giphyapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,10 +23,18 @@ public class DetailActivity extends AppCompatActivity {
     DBFavGif db;
     GifObject obj;
 
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+    String userName = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        editor = prefs.edit();
+        userName = prefs.getString("user", "");
 
         db = new DBFavGif(this);
         obj = getIntent().getParcelableExtra("theObject");
@@ -42,12 +51,12 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 db.open();
-                Cursor c = db.getItem(obj.imageUrl);
+                Cursor c = db.getItem(obj.imageUrl, userName);
                 if(c.moveToFirst()){
-                    db.deleteItem(obj.imageUrl);
+                    db.deleteItem(obj.imageUrl, userName);
                     Toast.makeText(getBaseContext(), "Item removed from favourites", Toast.LENGTH_SHORT).show();
                 }else {
-                    db.insertItem(obj.title, obj.imageUrl);
+                    db.insertItem(obj.title, obj.imageUrl, userName);
                     Toast.makeText(getBaseContext(), "Item added to favourites", Toast.LENGTH_SHORT).show();
                 }
                 db.close();

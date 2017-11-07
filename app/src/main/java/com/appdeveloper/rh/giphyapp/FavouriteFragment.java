@@ -3,6 +3,7 @@ package com.appdeveloper.rh.giphyapp;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -27,6 +30,10 @@ public class FavouriteFragment extends Fragment {
     TrendingListAdapter adapter;
     ArrayList<GifObject> gifsArrayList = new ArrayList<>();
 
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+    String userName = "";
+
     private EndlessRecyclerViewScrollListener scrollListener;
 
 
@@ -40,6 +47,9 @@ public class FavouriteFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_favourite, container, false);
+        prefs = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        editor = prefs.edit();
+        userName = prefs.getString("user", "");
         db = new DBFavGif(getActivity().getBaseContext());
 
         RecyclerView.ItemDecoration itemDecoration = new
@@ -69,7 +79,7 @@ public class FavouriteFragment extends Fragment {
         String urlGif;
 
         db.open();
-        Cursor c = db.getAllItems();
+        Cursor c = db.getAllItems(userName);
         if (c.moveToFirst()) {
             do {
                 title = c.getString(1);
