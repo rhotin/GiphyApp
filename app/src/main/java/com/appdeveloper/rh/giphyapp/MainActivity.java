@@ -15,7 +15,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     TabLayout tabLayout;
     TabItem trendingTab;
     TabItem favTab;
+    TextView nav_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View headerLayout = navigationView.getHeaderView(0);
+        nav_user = (TextView) headerLayout.findViewById(R.id.navUserTextView);
+
+        nav_user.setText(prefs.getString("user", "<user name>"));
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         trendingTab = (TabItem) findViewById(R.id.trendingTab);
@@ -76,12 +82,12 @@ public class MainActivity extends AppCompatActivity
                     if (tab.getText().toString().equals("Trending")) {
                         editor.putString("tab", tab.getText().toString());
                         editor.commit();
-                        Toast.makeText(getBaseContext(), "Trend", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getBaseContext(), "Trend", Toast.LENGTH_SHORT).show();
                         fragmentReplace(fm, trendingFragment);
                     } else if (tab.getText().toString().equals("My Favorite")) {
                         editor.putString("tab", tab.getText().toString());
                         editor.commit();
-                        Toast.makeText(getBaseContext(), "Fav", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getBaseContext(), "Fav", Toast.LENGTH_SHORT).show();
                         fragmentReplace(fm, favFragment);
                     }
                 }catch(NullPointerException e){
