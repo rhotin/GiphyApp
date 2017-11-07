@@ -2,6 +2,7 @@ package com.appdeveloper.rh.giphyapp;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class TrendingFragment extends Fragment implements DownloadGifs.Communicator {
 
     RecyclerView recyclerView;
@@ -34,7 +37,10 @@ public class TrendingFragment extends Fragment implements DownloadGifs.Communica
     int mStartItemCount = 0;
     int mShowItems = 24;
     String mAPIKey = "715e5d5458cf4ad8a63ffd4249559d27";
-    String mItemSearch = "funny";
+    String mItemSearch = "";
+
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
 
     public TrendingFragment() {
         // Required empty public constructor
@@ -45,6 +51,11 @@ public class TrendingFragment extends Fragment implements DownloadGifs.Communica
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_trending, container, false);
+
+        prefs = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        editor = prefs.edit();
+
+        mItemSearch = prefs.getString("search", "");
 
         gifsArrayList.clear();
         URL url = null;
@@ -59,6 +70,7 @@ public class TrendingFragment extends Fragment implements DownloadGifs.Communica
         searchEditText = (EditText) v.findViewById(R.id.searchText);
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 
+        searchEditText.setText(mItemSearch);
 
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(getActivity().getBaseContext(), DividerItemDecoration.VERTICAL);
@@ -89,6 +101,8 @@ public class TrendingFragment extends Fragment implements DownloadGifs.Communica
                 adapter.notifyDataSetChanged();
                 scrollListener.resetState();
                 mItemSearch = s.toString();
+                editor.putString("search", mItemSearch);
+                editor.commit();
                 String gifSearchUrl = setURL(mItemSearch, mStartItemCount, mShowItems);
                 try {
                     updateListView(new URL(gifSearchUrl));

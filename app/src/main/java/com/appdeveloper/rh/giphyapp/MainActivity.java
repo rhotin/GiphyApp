@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity
             // Handle the logout action
             //Toast.makeText(this, "Logging out", Toast.LENGTH_SHORT).show();
             editor.putString("tab", "");
+            editor.putString("search", "");
             editor.putString("user", "");
             editor.putString("pass", "");
             editor.commit();
