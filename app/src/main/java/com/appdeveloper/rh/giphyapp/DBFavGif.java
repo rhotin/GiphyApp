@@ -15,6 +15,7 @@ public class DBFavGif {
     static final String KEY_ROWID = "_id";
     static final String KEY_TITLE = "title";
     static final String KEY_PHOTO_URL = "photoUrl";
+    static final String KEY_USER_NAME = "username";
 
     private static final String DATABASE_NAME = "MyDBFav";
     private static final String DATABASE_TABLE = "favItems";
@@ -23,7 +24,8 @@ public class DBFavGif {
     private static final String DATABASE_CREATE =
             "create table " + DATABASE_TABLE + " (" + KEY_ROWID + " integer primary key autoincrement, "
                     + KEY_TITLE + " text, "
-                    + KEY_PHOTO_URL + " text);";
+                    + KEY_PHOTO_URL + " text, "
+                    + KEY_USER_NAME + " text);";
 
     final Context context;
 
@@ -77,37 +79,42 @@ public class DBFavGif {
     }
 
     //---insert a contact into the database---
-    public void insertItem(String mTitle, String mPhotoUrl) {
+    public void insertItem(String mTitle, String mPhotoUrl, String mUserName) {
         ContentValues insertValues = new ContentValues();
         insertValues.put(KEY_TITLE, mTitle);
         insertValues.put(KEY_PHOTO_URL, mPhotoUrl);
+        insertValues.put(KEY_USER_NAME, mUserName);
         db.insertOrThrow(DATABASE_TABLE, null, insertValues);
     }
 
     //---deletes a particular contact---
-    public boolean deleteItem(String mPhotoUrl) {
-        return db.delete(DATABASE_TABLE, KEY_PHOTO_URL + "='" + mPhotoUrl + "'", null) > 0;
+    public boolean deleteItem(String mPhotoUrl, String mUserName) {
+        return db.delete(DATABASE_TABLE, KEY_PHOTO_URL + "='" + mPhotoUrl + "' AND " +
+                KEY_USER_NAME + "='" + mUserName +"'", null) > 0;
     }
 
     //---retrieves all the contacts---
-    public Cursor getAllItems() {
-        return db.query(DATABASE_TABLE, new String[]{KEY_ROWID, KEY_TITLE, KEY_PHOTO_URL}, null, null, null, null, null);
+    public Cursor getAllItems(String mUserName) {
+        return db.query(DATABASE_TABLE, new String[]{KEY_ROWID, KEY_TITLE, KEY_PHOTO_URL, KEY_USER_NAME},
+                KEY_USER_NAME + "='" + mUserName +"'", null, null, null, null);
     }
 
     //---retrieves a particular contact---
-    public Cursor getItem(String mPhotoUrl) throws SQLException {
+    public Cursor getItem(String mPhotoUrl, String mUserName) throws SQLException {
         Cursor mCursor =
                 db.query(true, DATABASE_TABLE, new String[]{KEY_ROWID,
-                                KEY_TITLE, KEY_PHOTO_URL}, KEY_PHOTO_URL + "='" + mPhotoUrl + "'", null,
+                                KEY_TITLE, KEY_PHOTO_URL}, KEY_PHOTO_URL + "='" + mPhotoUrl + "'"+ " AND " +
+                                KEY_USER_NAME + "='" + mUserName +"'", null,
                         null, null, null, null);
         return mCursor;
     }
 
     //---updates a contact---
-    public boolean updateItem(long rowId, String mTitle, String mPhoto) {
+    public boolean updateItem(long rowId, String mTitle, String mPhoto, String mUserName) {
         ContentValues args = new ContentValues();
         args.put(KEY_TITLE, mTitle);
         args.put(KEY_PHOTO_URL, mPhoto);
-        return db.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+        return db.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId + " AND " + KEY_USER_NAME +
+                "='" + mUserName +"'", null) > 0;
     }
 }
