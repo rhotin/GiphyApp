@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 /**
@@ -37,7 +38,7 @@ public class DownloadGifs extends AsyncTask<URL, Integer, Void> {
         try {
             URL theUrl = new URL(urls[0].toString());
             BufferedReader reader = new BufferedReader
-                    (new InputStreamReader(theUrl.openConnection().getInputStream(), "UTF-8"));
+                    (new InputStreamReader(theUrl.openConnection().getInputStream(), StandardCharsets.UTF_8));
             String gifs_json = reader.readLine();
 
             Log.e("json", theUrl + gifs_json);

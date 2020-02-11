@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
      * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "roman@oneclass.com:hello", "oneclass@oneclass.com:password"
+            "r@gmail.com:password", "test@gmail.com:test2"
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
